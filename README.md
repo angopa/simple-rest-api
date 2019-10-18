@@ -20,4 +20,8 @@ And we will create the following operations for that resource:
 
 We will also be using JWT (JSON Web Token) for access tokens, and to that end, we will create another resource called auth that will expect user email and password and in return will generate the token used for authentication on certain operations.
 
- 
+The projetc contains three module folders:
+
+“common” (handling all shared services and information between user modules)
+“users” (everything regarding users)
+“authorization” (handle the flow to generate JWT and login flow) 
