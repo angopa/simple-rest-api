@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken'),
-		secret = require('../config/env.config.js').jws_secret,
-		crypto = require('crypto');
+const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
+	jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 exports.verifyRefreshBodyField = (req, res, next) => {
 	if (req.body && req.body.refresh_token) {
@@ -13,7 +13,10 @@ exports.verifyRefreshBodyField = (req, res, next) => {
 exports.validRefreshNeeded = (req, res, next) => {
 	let b = new Buffer(req.body.refresh_token, 'base64');
 	let refresh_token = b.toString();
-	let hash = crypto.createHmac('sha512', req.jwt.refreshKey).update(req.jwt.userId + secret).digest("base64");
+	let hash = crypto.createHmac('sha512', req.jwt.refreshKey)
+					.update(req.jwt.userId + jwtSecret)
+					.digest("base64");
+
 	if (hash == refresh_token) {
 		req.body = req.jwt;
 		return next();
@@ -25,11 +28,11 @@ exports.validRefreshNeeded = (req, res, next) => {
 exports.validJWTNeeded = (req, res, next) => {
 	if (req.headers['authorization']) {
 		try {
-			let authorization = req.headers['authorization'].split('');
+			let authorization = req.headers['authorization'].split(' ');
 			if (authorization[0] !== 'Bearer') {
 				return res.status(401).send();
 			} else {
-				req.jwt = jwt.verify(authorization[1], secret);
+				req.jwt = jwt.verify(authorization[1], jwtSecret);
 				return next();
 			}
 		} catch(err) {

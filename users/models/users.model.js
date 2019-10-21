@@ -18,11 +18,11 @@ userSchema.set('JSON', {
 	virtual: true
 });
 
+const User = mongoose.model('Users', userSchema);
+
 userSchema.findById = function(cb) {
 	return this.model('Users').find({id:this.id}, cb);
 };
-
-const User = mongoose.model('Users', userSchema);
 
 exports.findByEmail = (email) => {
 	return User.find({email: email});
@@ -33,6 +33,7 @@ exports.findById = (id) => {
 		result = result.toJSON();
 		delete result._id;
 		delete result.__v;
+		delete result.password;
 		return result;
 	});
 };
@@ -53,7 +54,7 @@ exports.list = (perPage, page) => {
 				} else {
 					resolve(users);
 				}
-			})
+			});
 	});
 };
 
@@ -75,7 +76,7 @@ exports.patchUser = (id, userData) => {
 
 exports.removeById = (userId) => {
 	return new Promise((resolve, reject) => {
-		User.remove({id: userId}, (err) => {
+		User.deleteOne({_id: userId}, (err) => {
 			if (err) {
 				reject(err);
 			} else {

@@ -22,6 +22,6 @@ We will also be using JWT (JSON Web Token) for access tokens, and to that end, w
 
 The projetc contains three module folders:
 
-“common” (handling all shared services and information between user modules)
-“users” (everything regarding users)
-“authorization” (handle the flow to generate JWT and login flow) 
+* “common” (handling all shared services and information between user modules)
+* “users” (everything regarding users)
+* “authorization” (handle the flow to generate JWT and login flow) 

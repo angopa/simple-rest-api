@@ -2,7 +2,7 @@ const UserModel = require('../../users/models/users.model');
 const crypto = require('crypto');
 
 exports.hasAuthValidFields = (req, res, next) => {
-	let error = [];
+	let errors = [];
 
 	if (req.body) {
 		if (req.body.email) {
@@ -29,7 +29,10 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
 			} else {
 				let passwordFields = user[0].password.split('$');
 				let salt = passwordFields[0];
-				let hash = crypto.createHmac('sha512', salt).update(req.body.password).digest('base64');
+				let hash = crypto.createHmac('sha512', salt)
+								.update(req.body.password + "")
+								.digest('base64');
+				console.log("Verify.User.Middleware.isPasswordAndUserMatch.user: " + user[0]);
 				if (hash == passwordFields[1]) {
 					req.body = {
 						userId: user[0]._id,

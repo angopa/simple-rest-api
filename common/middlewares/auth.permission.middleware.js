@@ -1,16 +1,15 @@
-const jws = require('jsonwebtoken'),
-	secret = require('../config/env.config')['jwt_secret'];
+const jwtSecret = require('../../common/config/env.config.js').jwt_secret,
+	jwt = require('jsonwebtoken');
 
 const ADMIN_PERMISSION = 4096;
 
 exports.minimumPermissionLevelRequired = (required_permissoin_level) => {
-	return (req, res, nect) => {
+	return (req, res, next) => {
 		let user_permission_level = parseInt(req.jwt.permissionLevel);
-		let userId = req.jwt.userId;
 		if (user_permission_level & required_permissoin_level) {
 			return next();
 		} else {
-			return res.status(403).send();
+			return res.status(403).send({error: "User without the permission level required."});
 		}
 	};
 };
@@ -24,7 +23,7 @@ exports.onlySameUserOrAdminCanDoThisAction = (req, res, next) => {
 		if (user_permission_level & ADMIN_PERMISSION) {
 			return next();
 		} else {
-			return res.status(400).send();
+			return res.status(400).send({error: "Just Admin permission user can modify different user."});
 		}
 	}
 };
